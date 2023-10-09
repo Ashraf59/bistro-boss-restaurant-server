@@ -12,7 +12,7 @@ app.use(express.json());
 // Custom Middleware for JWT
 const verifyJWT = (req, res, next) => {
   const authorization = req.headers.authorization;
-  console.log(authorization)
+  // console.log(req)
   if(!authorization){
     return res.status(401).send({error: true, message: 'unathorized access'})
   }
@@ -78,6 +78,7 @@ async function run() {
     app.get('/users', verifyJWT, verifyAdmin, async(req, res) => {
       const result = await usersCollection.find().toArray();
       res.send(result)
+      console.log(result)
     });
 
     app.post('/users', async(req, res) => {
@@ -128,6 +129,12 @@ async function run() {
     app.get('/menu', async(req, res) => {
         const result = await menuCollection.find().toArray();
         res.send(result);
+    })
+
+    app.post('/menu', async (req, res) => {
+      const newItem = req.body;
+      const result = await menuCollection.insertOne(newItem)
+      res.send(result)
     })
 
       //reviews related apis
